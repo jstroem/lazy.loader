@@ -12,6 +12,8 @@
 
 Module for lazy loading in angular.
 
+This loader is inspired by https://github.com/urish/angular-load.
+
 ## Demo
 
 http://jstroem.github.io/lazy.loader/demo

@@ -1,6 +1,9 @@
 var setup = require('./setup');
+var loaderService = require('./service');
 
-var mod = angular.module('lazy.loader', []).config(setup.reset);
+var mod = angular.module('lazy.loader', [])
+  .config(setup.reset)
+  .service('lazyLoaderService', loaderService);
 mod.lazy = setup;
 
 module.exports = mod.name;
