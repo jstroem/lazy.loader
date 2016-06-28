@@ -1,41 +1,76 @@
+var uiRouterHandler = require('./uiRouter');
+var ngRouteHandler = require('./ngRoute');
+
 module.exports = (function() {
   var lazyModules = {};
   var originalMethods = {};
 
-  function lazyConfig(name) {
-    if (lazyModules[name] !== undefined)
+  function moduleExists(moduleName) {
+    try {
+      angular.module(moduleName);
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  function moduleRequires(moduleName, requiredModuleName) {
+    var module = angular.module(moduleName);
+    return module.requires.indexOf(requiredModuleName) != -1;
+  }
+
+  function bindModuleDependencies(moduleName) {
+    if (moduleRequires(moduleName, 'ui.router'))
+      uiRouterHandler(moduleName);
+    if (moduleRequires(moduleName, 'ngRoute'))
+      ngRouteHandler(moduleName);
+  }
+
+  function lazyConfig(moduleName) {
+    if (!moduleExists(moduleName))
+      return angular.noop;
+
+    if (lazyModules[moduleName] !== undefined)
       return angular.noop;
 
     function config($controllerProvider, $provide, $compileProvider) {
-      lazyModules[name] = {
+      if (lazyModules[moduleName] !== undefined)
+        return false;
+
+
+      lazyModules[moduleName] = {
         controller: $controllerProvider.register,
         factory: $provide.factory,
         service: $provide.service,
         directive: $compileProvider.directive
       }
+      return true;
     }
     config.$inject = ['$controllerProvider', '$provide', '$compileProvider'];
     return config;
   }
 
-  function lazyRun(name) {
+  function lazyRun(moduleName) {
+    if (!moduleExists(moduleName))
+      return angular.noop;
+
     return function run() {
-      if (lazyModules[name] === undefined || originalMethods[name] !== undefined)
+      if (lazyModules[moduleName] === undefined || originalMethods[moduleName] !== undefined)
         return false;
 
-      var mod = angular.module(name);
+      var mod = angular.module(moduleName);
 
-      originalMethods[name] = {
+      originalMethods[moduleName] = {
         controller: mod.controller,
         factory: mod.factory,
         service: mod.service,
         directive: mod.directive
       };
 
-      mod.controller = lazyModules[name].controller;
-      mod.factory = lazyModules[name].factory;
-      mod.service = lazyModules[name].service;
-      mod.directive = lazyModules[name].directive;
+      mod.controller = lazyModules[moduleName].controller;
+      mod.factory = lazyModules[moduleName].factory;
+      mod.service = lazyModules[moduleName].service;
+      mod.directive = lazyModules[moduleName].directive;
       return true;
     }
   }
@@ -45,12 +80,17 @@ module.exports = (function() {
     originalMethods = {};
   }
 
-  function lazyModule(name) {
-    return lazyModules[name];
+  function lazyModule(moduleName) {
+    return lazyModules[moduleName];
   }
 
   function lazyInit(moduleName) {
-    var targetModule = angular.module(moduleName)
+    if (!moduleExists(moduleName))
+      return;
+
+    bindModuleDependencies(moduleName);
+
+    return targetModule = angular.module(moduleName)
       .config(lazyConfig(moduleName))
       .run(lazyRun(moduleName));
   }
