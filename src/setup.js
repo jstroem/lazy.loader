@@ -1,5 +1,6 @@
 var uiRouterHandler = require('./uiRouter');
 var ngRouteHandler = require('./ngRoute');
+var uiBootstrapHandler = require('./uiBootstrap');
 
 module.exports = (function() {
   var lazyModules = {};
@@ -24,6 +25,8 @@ module.exports = (function() {
       uiRouterHandler(moduleName);
     if (moduleRequires(moduleName, 'ngRoute'))
       ngRouteHandler(moduleName);
+    if (moduleRequires(moduleName, 'ui.bootstrap'))
+      uiBootstrapHandler(moduleName);
   }
 
   function lazyConfig(moduleName) {

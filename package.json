@@ -1,11 +1,18 @@
 {
-  "name": "lazy.loader",
-  "version": "0.1.0",
-  "description": "Lazy loader for angular",
+  "name": "angular-lazy-loader",
+  "version": "0.4.0",
+  "description": "Makes it possible to lazy load angular controllers, decorators and services etc. It works perfectly with ngRoute, ui.router and ui.bootstrap",
   "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "test": "karma start --single-run --browsers PhantomJS",
     "postpublish": "git push --follow-tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jstroem/lazy.loader.git"
   },
   "keywords": [
     "angular",
@@ -14,11 +21,16 @@
     "router"
   ],
   "author": "Jesper Lindstrøm Nielsen <me@jstroem.com> (http://jstroem.com)",
+  "bugs": {
+    "url": "https://github.com/jstroem/lazy.loader/issues"
+  },
+  "homepage": "https://github.com/jstroem/lazy.loader",
   "license": "ISC",
   "devDependencies": {
     "angular": "^1.5.5",
     "angular-mocks": "^1.5.5",
     "angular-route": "^1.5.5",
+    "angular-ui-bootstrap": "^1.3.3",
     "angular-ui-router": "^0.3.1",
     "babelify": "^7.3.0",
     "bower": "^1.7.9",

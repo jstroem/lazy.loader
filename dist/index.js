@@ -87,6 +87,7 @@ module.exports = service;
 },{}],4:[function(require,module,exports){
 var uiRouterHandler = require('./uiRouter');
 var ngRouteHandler = require('./ngRoute');
+var uiBootstrapHandler = require('./uiBootstrap');
 
 module.exports = (function() {
   var lazyModules = {};
@@ -111,6 +112,8 @@ module.exports = (function() {
       uiRouterHandler(moduleName);
     if (moduleRequires(moduleName, 'ngRoute'))
       ngRouteHandler(moduleName);
+    if (moduleRequires(moduleName, 'ui.bootstrap'))
+      uiBootstrapHandler(moduleName);
   }
 
   function lazyConfig(moduleName) {
@@ -212,7 +215,37 @@ module.exports = (function() {
  }
 }());
 
-},{"./ngRoute":2,"./uiRouter":5}],5:[function(require,module,exports){
+},{"./ngRoute":2,"./uiBootstrap":5,"./uiRouter":6}],5:[function(require,module,exports){
+module.exports = function (moduleName) {
+  function decorate($delegate) {
+    var originalOpen = $delegate.open;
+
+    $delegate.open = function(modalOptions) {
+      if (modalOptions.hasOwnProperty('controllerUrl')) {
+        if (modalOptions.resolve === undefined)
+            modalOptions.resolve = {};
+        modalOptions.resolve['$$lazyLoader$controller'] = resolver(modalOptions.controllerUrl);
+      }
+      return originalOpen.apply($delegate,arguments);
+    }
+
+    return $delegate;
+  }
+
+  function resolver(fileUrl) {
+    function resolveFile(lazyLoaderService) {
+      return lazyLoaderService.load(fileUrl);
+    }
+    resolveFile.$inject = ['lazyLoaderService'];
+    return resolveFile;
+  }
+
+  decorate.$inject = ['$delegate'];
+
+  angular.module(moduleName).decorator('$uibModal', decorate);
+}
+
+},{}],6:[function(require,module,exports){
 module.exports = function (moduleName) {
   function config($stateProvider) {
     $stateProvider.decorator('resolve', decorate);

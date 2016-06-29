@@ -1061,4 +1061,65 @@ describe ('lazy.loader', function () {
       expect($route.current.locals).toBeUndefined();
     });
   })
+
+  describe('uiBootstrapHandler', function() {
+    beforeEach(module('lazy.loader'));
+
+    var lazyModule, mainModule;
+    beforeEach(function() {
+      lazyModule = angular.module('lazy.loader');
+      lazyModule.lazy.reset();
+      mainModule = angular.module('mainModule', ['lazy.loader','ui.bootstrap'], function($provide) {
+        $provide.value('lazyLoaderService', loaderService);
+      });
+    });
+
+    var scope, loaderService, $timeout;
+    beforeEach(inject(function ($rootScope, lazyLoaderService, _$timeout_) {
+      scope = $rootScope.$new(true);
+      loaderService = lazyLoaderService;
+      $timeout = _$timeout_;
+    }));
+
+
+    it('should not add resolve to the modalOptions without controllerUrl', function() {
+      var $uibModal = undefined;
+
+      lazyModule.lazy.init(mainModule.name)
+      .run(['$uibModal', function($s){
+        $uibModal = $s;
+      }]);
+
+      angular.bootstrap(mockDocument, [mainModule.name]);
+
+      var modalOptions = {
+        template: 'test'
+      };
+
+      $uibModal.open(modalOptions);
+      expect(modalOptions.resolve).toBeUndefined();
+    });
+
+    it('should add a resolver and load the file once the modal.open is called.', function() {
+      var $uibModal = undefined;
+
+      lazyModule.lazy.init(mainModule.name)
+      .run(['$uibModal', function($s){
+        $uibModal = $s;
+      }]);
+
+      angular.bootstrap(mockDocument, [mainModule.name]);
+
+      var modalOptions = {
+        template: 'test',
+        controllerUrl: 'https://www.test.org/somescript.js'
+      };
+
+      $uibModal.open(modalOptions);
+      expect(modalOptions.resolve).toBeDefined();
+      expect(modalOptions.resolve['$$lazyLoader$controller']).toBeDefined();
+      expect(mockDocument.createElement).toHaveBeenCalledWith('script');
+			expect(mockDocument.body.appendChild).toHaveBeenCalled();
+    });
+  });
 });

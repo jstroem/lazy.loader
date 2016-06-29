@@ -1,18 +1,18 @@
 {
-  "name": "ui-router-lazy",
-  "description": "input formatter as currency with Angular",
-  "main": "dist/ng-input-currency.js",
+  "name": "angular-lazy-loader",
+  "description": "Makes it possible to lazy load angular controllers, decorators and services etc. It works perfectly with ngRoute, ui.router and ui.bootstrap",
+  "main": "dist/index.js",
   "authors": [
     "Jesper Lindstrøm Nielsen <me@jstroem.com>"
   ],
   "license": "MIT",
   "keywords": [
     "angular",
-    "currency",
-    "input",
-    "format"
+    "lazy",
+    "loading",
+    "router"
   ],
-  "homepage": "https://github.com/jstroem/ng-input-currency",
+  "homepage": "https://github.com/jstroem/lazy.loader",
   "moduleType": [],
   "ignore": [
     "**/.*",
