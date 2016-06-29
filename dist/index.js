@@ -120,7 +120,7 @@ module.exports = (function() {
     if (lazyModules[moduleName] !== undefined)
       return angular.noop;
 
-    function config($controllerProvider, $provide, $compileProvider) {
+    function config($controllerProvider, $provide, $compileProvider, $filterProvider, $animateProvider) {
       if (lazyModules[moduleName] !== undefined)
         return false;
 
@@ -129,11 +129,18 @@ module.exports = (function() {
         controller: $controllerProvider.register,
         factory: $provide.factory,
         service: $provide.service,
-        directive: $compileProvider.directive
+        decorator: $provide.decorator,
+        constant: $provide.constant,
+        value: $provide.value,
+        provider: $provide.provider,
+        directive: $compileProvider.directive,
+        component: $compileProvider.component,
+        animation: $animateProvider.register,
+        filter: $filterProvider.register,
       }
       return true;
     }
-    config.$inject = ['$controllerProvider', '$provide', '$compileProvider'];
+    config.$inject = ['$controllerProvider', '$provide', '$compileProvider','$filterProvider','$animateProvider'];
     return config;
   }
 
@@ -151,13 +158,27 @@ module.exports = (function() {
         controller: mod.controller,
         factory: mod.factory,
         service: mod.service,
-        directive: mod.directive
+        decorator: mod.decorator,
+        constant: mod.constant,
+        value: mod.value,
+        provider: mod.provider,
+        directive: mod.directive,
+        component: mod.component,
+        animation: mod.animation,
+        filter: mod.filter,
       };
 
       mod.controller = lazyModules[moduleName].controller;
       mod.factory = lazyModules[moduleName].factory;
       mod.service = lazyModules[moduleName].service;
+      mod.decorator = lazyModules[moduleName].decorator;
+      mod.constant = lazyModules[moduleName].constant;
+      mod.value = lazyModules[moduleName].value;
+      mod.provider = lazyModules[moduleName].provider;
       mod.directive = lazyModules[moduleName].directive;
+      mod.component = lazyModules[moduleName].component;
+      mod.animation = lazyModules[moduleName].animation;
+      mod.filter = lazyModules[moduleName].filter;
       return true;
     }
   }

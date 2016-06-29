@@ -33,7 +33,7 @@ describe ('lazy.loader', function () {
         var lazyConfig = angular.module('lazy.loader').lazy.config(mainModule.name);
         expect(lazyConfig).toBeDefined();
         expect(typeof lazyConfig).toBe('function');
-        expect(lazyConfig.$inject).toEqual(['$controllerProvider', '$provide', '$compileProvider']);
+        expect(lazyConfig.$inject).toEqual(['$controllerProvider', '$provide', '$compileProvider', '$filterProvider', '$animateProvider']);
       });
 
       it('should be a proper config function', function() {
@@ -51,7 +51,7 @@ describe ('lazy.loader', function () {
 
       it('should just return a noop if the config is already properly configured.', function() {
         var lazyConfig = lazyModule.lazy.config(mainModule.name);
-        expect(lazyConfig.$inject).toEqual(['$controllerProvider', '$provide', '$compileProvider']);
+        expect(lazyConfig.$inject).toEqual(['$controllerProvider', '$provide', '$compileProvider', '$filterProvider', '$animateProvider']);
 
         mainModule.config(lazyConfig);
 
@@ -111,14 +111,39 @@ describe ('lazy.loader', function () {
         angular.injector(['ng',mainModule.name]);
 
         expect(lazyModule.lazy.module(mainModule.name)).toBeDefined();
+
         expect(lazyModule.lazy.module(mainModule.name).controller).toBeDefined();
         expect(typeof lazyModule.lazy.module(mainModule.name).controller).toBe('function');
-        expect(lazyModule.lazy.module(mainModule.name).directive).toBeDefined();
-        expect(typeof lazyModule.lazy.module(mainModule.name).directive).toBe('function');
-        expect(lazyModule.lazy.module(mainModule.name).service).toBeDefined();
-        expect(typeof lazyModule.lazy.module(mainModule.name).service).toBe('function');
+
         expect(lazyModule.lazy.module(mainModule.name).factory).toBeDefined();
         expect(typeof lazyModule.lazy.module(mainModule.name).factory).toBe('function');
+
+        expect(lazyModule.lazy.module(mainModule.name).service).toBeDefined();
+        expect(typeof lazyModule.lazy.module(mainModule.name).service).toBe('function');
+
+        expect(lazyModule.lazy.module(mainModule.name).decorator).toBeDefined();
+        expect(typeof lazyModule.lazy.module(mainModule.name).decorator).toBe('function');
+
+        expect(lazyModule.lazy.module(mainModule.name).constant).toBeDefined();
+        expect(typeof lazyModule.lazy.module(mainModule.name).constant).toBe('function');
+
+        expect(lazyModule.lazy.module(mainModule.name).value).toBeDefined();
+        expect(typeof lazyModule.lazy.module(mainModule.name).value).toBe('function');
+
+        expect(lazyModule.lazy.module(mainModule.name).provider).toBeDefined();
+        expect(typeof lazyModule.lazy.module(mainModule.name).provider).toBe('function');
+
+        expect(lazyModule.lazy.module(mainModule.name).directive).toBeDefined();
+        expect(typeof lazyModule.lazy.module(mainModule.name).directive).toBe('function');
+
+        expect(lazyModule.lazy.module(mainModule.name).component).toBeDefined();
+        expect(typeof lazyModule.lazy.module(mainModule.name).component).toBe('function');
+
+        expect(lazyModule.lazy.module(mainModule.name).animation).toBeDefined();
+        expect(typeof lazyModule.lazy.module(mainModule.name).animation).toBe('function');
+
+        expect(lazyModule.lazy.module(mainModule.name).filter).toBeDefined();
+        expect(typeof lazyModule.lazy.module(mainModule.name).filter).toBe('function');
       });
     });
 
@@ -147,14 +172,28 @@ describe ('lazy.loader', function () {
           controller: mainModule.controller,
           factory: mainModule.factory,
           service: mainModule.service,
+          decorator: mainModule.decorator,
+          constant: mainModule.constant,
+          value: mainModule.value,
+          provider: mainModule.provider,
           directive: mainModule.directive,
+          component: mainModule.component,
+          animation: mainModule.animation,
+          filter: mainModule.filter,
         };
         var lazyRun = lazyModule.lazy.run(mainModule.name);
         expect(lazyRun()).toBe(false);
         expect(mainModule.controller).toBe(orgMethods.controller);
         expect(mainModule.factory).toBe(orgMethods.factory);
         expect(mainModule.service).toBe(orgMethods.service);
+        expect(mainModule.decorator).toBe(orgMethods.decorator);
+        expect(mainModule.constant).toBe(orgMethods.constant);
+        expect(mainModule.value).toBe(orgMethods.value);
+        expect(mainModule.provider).toBe(orgMethods.provider);
         expect(mainModule.directive).toBe(orgMethods.directive);
+        expect(mainModule.component).toBe(orgMethods.component);
+        expect(mainModule.animation).toBe(orgMethods.animation);
+        expect(mainModule.filter).toBe(orgMethods.filter);
       });
 
       it('should modify the module if the module is configured', function() {
@@ -162,7 +201,14 @@ describe ('lazy.loader', function () {
           controller: mainModule.controller,
           factory: mainModule.factory,
           service: mainModule.service,
+          decorator: mainModule.decorator,
+          constant: mainModule.constant,
+          value: mainModule.value,
+          provider: mainModule.provider,
           directive: mainModule.directive,
+          component: mainModule.component,
+          animation: mainModule.animation,
+          filter: mainModule.filter,
         };
 
         var lazyRun = lazyModule.lazy.run(mainModule.name);
@@ -180,8 +226,22 @@ describe ('lazy.loader', function () {
         expect(mainModule.factory).toBe(lazyModule.lazy.module(mainModule.name).factory);
         expect(mainModule.service).not.toBe(orgMethods.service);
         expect(mainModule.service).toBe(lazyModule.lazy.module(mainModule.name).service);
+        expect(mainModule.decorator).not.toBe(orgMethods.decorator);
+        expect(mainModule.decorator).toBe(lazyModule.lazy.module(mainModule.name).decorator);
+        expect(mainModule.constant).not.toBe(orgMethods.constant);
+        expect(mainModule.constant).toBe(lazyModule.lazy.module(mainModule.name).constant);
+        expect(mainModule.value).not.toBe(orgMethods.value);
+        expect(mainModule.value).toBe(lazyModule.lazy.module(mainModule.name).value);
+        expect(mainModule.provider).not.toBe(orgMethods.provider);
+        expect(mainModule.provider).toBe(lazyModule.lazy.module(mainModule.name).provider);
         expect(mainModule.directive).not.toBe(orgMethods.directive);
         expect(mainModule.directive).toBe(lazyModule.lazy.module(mainModule.name).directive);
+        expect(mainModule.component).not.toBe(orgMethods.component);
+        expect(mainModule.component).toBe(lazyModule.lazy.module(mainModule.name).component);
+        expect(mainModule.animation).not.toBe(orgMethods.animation);
+        expect(mainModule.animation).toBe(lazyModule.lazy.module(mainModule.name).animation);
+        expect(mainModule.filter).not.toBe(orgMethods.filter);
+        expect(mainModule.filter).toBe(lazyModule.lazy.module(mainModule.name).filter);
       });
     });
 
@@ -201,7 +261,14 @@ describe ('lazy.loader', function () {
           controller: mainModule.controller,
           factory: mainModule.factory,
           service: mainModule.service,
+          decorator: mainModule.decorator,
+          constant: mainModule.constant,
+          value: mainModule.value,
+          provider: mainModule.provider,
           directive: mainModule.directive,
+          component: mainModule.component,
+          animation: mainModule.animation,
+          filter: mainModule.filter,
         };
 
         expect(mainModule._configBlocks.length).toBe(0);
@@ -224,8 +291,373 @@ describe ('lazy.loader', function () {
         expect(mainModule.factory).toBe(lazyModule.lazy.module(mainModule.name).factory);
         expect(mainModule.service).not.toBe(orgMethods.service);
         expect(mainModule.service).toBe(lazyModule.lazy.module(mainModule.name).service);
+        expect(mainModule.decorator).not.toBe(orgMethods.decorator);
+        expect(mainModule.decorator).toBe(lazyModule.lazy.module(mainModule.name).decorator);
+        expect(mainModule.constant).not.toBe(orgMethods.constant);
+        expect(mainModule.constant).toBe(lazyModule.lazy.module(mainModule.name).constant);
+        expect(mainModule.value).not.toBe(orgMethods.value);
+        expect(mainModule.value).toBe(lazyModule.lazy.module(mainModule.name).value);
+        expect(mainModule.provider).not.toBe(orgMethods.provider);
+        expect(mainModule.provider).toBe(lazyModule.lazy.module(mainModule.name).provider);
         expect(mainModule.directive).not.toBe(orgMethods.directive);
         expect(mainModule.directive).toBe(lazyModule.lazy.module(mainModule.name).directive);
+        expect(mainModule.component).not.toBe(orgMethods.component);
+        expect(mainModule.component).toBe(lazyModule.lazy.module(mainModule.name).component);
+        expect(mainModule.animation).not.toBe(orgMethods.animation);
+        expect(mainModule.animation).toBe(lazyModule.lazy.module(mainModule.name).animation);
+        expect(mainModule.filter).not.toBe(orgMethods.filter);
+        expect(mainModule.filter).toBe(lazyModule.lazy.module(mainModule.name).filter);
+      });
+    });
+
+    describe('lazy methods', function() {
+      describe('.controller register on a angularModule', function( ){
+        var $controller;
+        beforeEach(function() {
+           mainModule.run(['$controller', function(ctrl){
+             $controller = ctrl;
+           }]);
+        });
+
+        function hasController(name) {
+          try {
+            $controller(name, {'$scope': {}}, true);
+            return true;
+          } catch(e) {
+            return false;
+          }
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasController('test')).toBe(false);
+          mainModule.controller('test', function() {});
+          expect(hasController('test')).toBe(false);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasController('test')).toBe(false);
+          mainModule.controller('test', function() {});
+          expect(hasController('test')).toBe(true);
+        });
+      });
+
+      describe('.factory register on a angularModule', function() {
+        var $injector;
+
+        beforeEach(function(){
+          mainModule.run(['$injector', function(cmpl) {
+            $injector = cmpl;
+          }])
+        });
+
+        function hasFactory(name) {
+          return $injector.has(name);
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasFactory('testFactory')).toBe(false);
+          mainModule.factory('testFactory', function() {
+            this.$get = function() {}
+          });
+          expect(hasFactory('testFactory')).toBe(false);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasFactory('testFactory')).toBe(false);
+          mainModule.factory('testFactory', function() {
+            this.$get = function() {}
+          });
+          expect(hasFactory('testFactory')).toBe(true);
+        });
+      });
+
+      describe('.service register on a angularModule', function() {
+        var $injector;
+
+        beforeEach(function(){
+          mainModule.run(['$injector', function(cmpl) {
+            $injector = cmpl;
+          }])
+        });
+
+        function hasService(name) {
+          return $injector.has(name);
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasService('testService')).toBe(false);
+          mainModule.service('testService', function() {
+            return function() {}
+          });
+          expect(hasService('testService')).toBe(false);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasService('testService')).toBe(false);
+          mainModule.service('testService', function() {
+            return function() {}
+          });
+          expect(hasService('testService')).toBe(true);
+        });
+      });
+
+      describe('.decorator register on a angularModule', function() {
+        //Not testable currently
+      });
+
+      describe('.constant register on a angularModule', function() {
+        var $injector;
+
+        beforeEach(function(){
+          mainModule.run(['$injector', function(cmpl) {
+            $injector = cmpl;
+          }])
+        });
+
+        function getConstant(name) {
+          if ($injector.has(name))
+            return $injector.get(name);
+          return undefined;
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(getConstant('testConstant')).toBe(undefined);
+          mainModule.constant('testConstant','value1');
+          expect(getConstant('testConstant')).toBe(undefined);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(getConstant('testConstant')).toBe(undefined);
+          mainModule.constant('testConstant','value1');
+          expect(getConstant('testConstant')).toBe('value1');
+        });
+      });
+
+      describe('.value register on a angularModule', function() {
+        var $injector;
+
+        beforeEach(function(){
+          mainModule.run(['$injector', function(cmpl) {
+            $injector = cmpl;
+          }])
+        });
+
+        function getValue(name) {
+          if ($injector.has(name))
+            return $injector.get(name);
+          return undefined;
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(getValue('testValue')).toBe(undefined);
+          mainModule.constant('testValue','value1');
+          expect(getValue('testValue')).toBe(undefined);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(getValue('testValue')).toBe(undefined);
+          mainModule.constant('testValue','value1');
+          expect(getValue('testValue')).toBe('value1');
+        });
+      });
+
+      describe('.provider register on a angularModule', function() {
+        var $injector;
+
+        beforeEach(function(){
+          mainModule.run(['$injector', function(cmpl) {
+            $injector = cmpl;
+          }])
+        });
+
+        function hasProvider(name) {
+          return $injector.has(name);
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasProvider('testProvider')).toBe(false);
+          mainModule.provider('testProvider', function() {
+            this.$get = function() {}
+          });
+          expect(hasProvider('testProvider')).toBe(false);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasProvider('testProvider')).toBe(false);
+          mainModule.provider('testProvider', function() {
+            this.$get = function() {}
+          });
+          expect(hasProvider('testProvider')).toBe(true);
+        });
+      });
+
+      describe('.directive register on a angularModule', function() {
+        var $injector;
+
+        beforeEach(function(){
+          mainModule.run(['$injector', function(cmpl) {
+            $injector = cmpl;
+          }])
+        });
+
+        function hasDirective(name) {
+          return $injector.has(name+'Directive');
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasDirective('test')).toBe(false);
+          mainModule.directive('test', function() { return { template:'' }; });
+          expect(hasDirective('test')).toBe(false);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasDirective('test')).toBe(false);
+          mainModule.directive('test', function() { return { template:'' }; });
+          expect(hasDirective('test')).toBe(true);
+        });
+      });
+
+      describe('.component register on a angularModule', function() {
+        var $injector;
+
+        beforeEach(function(){
+          mainModule.run(['$injector', function(cmpl) {
+            $injector = cmpl;
+          }])
+        });
+
+        function hasComponent(name) {
+          return $injector.has(name+'Directive');
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasComponent('test')).toBe(false);
+          mainModule.component('test', { template:'' });
+          expect(hasComponent('test')).toBe(false);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasComponent('test')).toBe(false);
+          mainModule.component('test', { template:'' });
+          expect(hasComponent('test')).toBe(true);
+        });
+      });
+
+      describe('.animation register on a angularModule', function() {
+        var $animateProvider;
+
+        beforeEach(function(){
+          mainModule.config(['$animateProvider', function(anim) {
+            $animateProvider = anim;
+          }])
+        });
+
+        function hasAnimation(name) {
+          return $animateProvider.$$registeredAnimations[name] !== undefined;
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasAnimation('testAnimation')).toBe(false);
+          mainModule.animation('.testAnimation', { });
+          expect(hasAnimation('testAnimation')).toBe(false);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasAnimation('testAnimation')).toBe(false);
+          mainModule.animation('.testAnimation', { });
+          expect(hasAnimation('testAnimation')).toBe(true);
+        });
+      });
+
+      describe('.filter register on a angularModule', function() {
+        var $filter;
+
+        beforeEach(function(){
+          mainModule.run(['$filter', function(fil) {
+            $filter = fil;
+          }])
+        });
+
+        function hasFilter(name) {
+          try {
+            $filter(name);
+            return true;
+          } catch(e) {
+            return false;
+          }
+        }
+
+        it('should not be able to call before lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasFilter('testFilter')).toBe(false);
+          mainModule.filter('testFilter', function(){ return function() { } });
+          expect(hasFilter('testFilter')).toBe(false);
+        });
+
+        it('should be able to call after lazyModule is initiated.', function() {
+          //Loads the mainModule.
+          lazyModule.lazy.init(mainModule.name);
+
+          angular.bootstrap(mockDocument, [mainModule.name]);
+          expect(hasFilter('testFilter')).toBe(false);
+          mainModule.filter('testFilter', function(){ return function() { } });
+          expect(hasFilter('testFilter')).toBe(true);
+        });
       });
     });
   });
@@ -585,7 +1017,6 @@ describe ('lazy.loader', function () {
       scriptElement.onreadystatechange({});
       $timeout.flush();
       $rootScope.$digest();
-
       expect($route.current.locals).toBeDefined();
       expect($route.current.locals['$$lazyLoader$controller']).toBeDefined();
     });
