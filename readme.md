@@ -11,6 +11,9 @@
 [npm]: https://img.shields.io/npm/v/angular-lazy.loader.svg?style=flat-square
 
 Module for lazy loading in angular.
+Makes it possible to lazy load angular elements (controllers, decorators, services, filters etc).
+
+The project is build with support for the following modules: [`ui.router`](https://www.npmjs.com/package/angular-ui-router), [`ngRoute`](https://www.npmjs.com/package/angular-route) and [`ui.bootstrap`](https://www.npmjs.com/package/angular-ui-bootstrap).
 
 This loader is inspired by https://github.com/urish/angular-load.
 
@@ -20,9 +23,41 @@ http://jstroem.github.io/lazy.loader/demo
 
 ## Installation
 
-TBA.
+via `npm`:
+```
+npm install angular-lazy.loader
+```
+
+via `bower`:
+```
+bower install angular-lazy.loader
+```
+
+
 
 ## Usage
+
+Before you can use any of the lazy-loading methods listed below you need to initialize `lazy.loader` to the angular module you want to be able to add elements to lazily.
+
+```javascript
+angular.module('moduleName', [..., 'lazy.loader']);
+angular.module('lazy.loader').lazy.init('moduleName');
+```
+
+NOTE: You need to call the `lazy.init` before any other methods are used on the module.
+
+The `.lazy.init` method returns the `moduleName` module itself so you can chain your element registrations afterwards:
+
+```javascript
+angular.module('moduleName', [..., 'lazy.loader']);
+angular.module('lazy.loader').lazy.init('moduleName')
+       .controller('controlelrName', function() {
+         ...
+       })
+       .config(function() {
+         ...
+       });
+```
 
 ### Using with ngRoute
 
@@ -63,6 +98,21 @@ $uibModal.modal({
   controllerAs: 'vm'
 });
 ```
+
+### Using the `lazyLoaderService`:
+
+You can also load your own custom javascript files by using the `lazyLoaderService.load` method. The method returns a promise which tells if the file was loaded correctly.
+
+```javascript
+['$lazyLoaderService', function(lazyLoader) {
+  lazyLoader.load('https://some.url/javascript.js').then(function(){
+    console.log("success");
+  }, function(){
+    console.log("error");
+  });
+}]
+```
+
 ## Running the tests
 
 ```sh
