@@ -33,6 +33,14 @@ gulp.task('publish', shell.task([
     'npm publish'
 ]));
 
+gulp.task('gh-pages', shell.task([
+  'git checkout master',
+  'git checkout gh-pages',
+  'git rebase master',
+  'git push origin gh-pages',
+  'git checkout master'
+]));
+
 gulp.task('build:src', function() {
   return gulp.src(conf.main).pipe(plumber()).pipe(browserify()).pipe(gulp.dest(conf.dest));
 });
