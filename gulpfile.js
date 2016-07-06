@@ -30,7 +30,8 @@ gulp.task('test', function (done) {
 
 gulp.task('publish', shell.task([
     'npm version patch',
-    'npm publish'
+    'npm publish',
+    'gulp coveralls'
 ]));
 
 gulp.task('gh-pages', shell.task([

@@ -784,6 +784,11 @@ describe ('lazy.loader', function () {
         $stateProvider.state('test1', {
           url: '/',
           template: 'test',
+          views: {
+            test: {
+              template: 'test2'
+            }
+          }
         });
 
       }]).run(['$state', function($s){
@@ -821,6 +826,67 @@ describe ('lazy.loader', function () {
 
       expect(mockDocument.createElement).toHaveBeenCalledWith('script');
 			expect(mockDocument.body.appendChild).toHaveBeenCalled();
+    });
+
+    it('should decorate the resolve object from views object.', function() {
+      var $state = undefined;
+      lazyModule.lazy.init(mainModule.name)
+        .config(['$stateProvider','$provide', function($stateProvider,$provide) {
+        $stateProvider.state('test1', {
+          url: '/',
+          views: {
+              test1: {
+                template: 'test',
+                controllerUrl: 'https://www.test.org/somescript.js'
+              }
+          }
+        });
+
+      }]).run(['$state', function($s){
+        $state = $s;
+      }]);
+
+      angular.bootstrap(mockDocument, [mainModule.name]);
+
+      expect(mockDocument.createElement).not.toHaveBeenCalledWith('script');
+			expect(mockDocument.body.appendChild).not.toHaveBeenCalled();
+
+      $state.go('test1');
+
+      expect(mockDocument.createElement).toHaveBeenCalledWith('script');
+			expect(mockDocument.body.appendChild).toHaveBeenCalled();
+    });
+
+    it('should decorate the resolve object from both views and object.', function() {
+      var $state = undefined;
+      lazyModule.lazy.init(mainModule.name)
+        .config(['$stateProvider','$provide', function($stateProvider,$provide) {
+        $stateProvider.state('test1', {
+          url: '/',
+          template: 'test',
+          controllerUrl: 'https://www.test.org/somescript.js',
+          views: {
+              test1: {
+                template: 'test',
+                controllerUrl: 'https://www.test.org/somescript_test.js'
+              }
+          }
+        });
+
+      }]).run(['$state', function($s){
+        $state = $s;
+      }]);
+
+      angular.bootstrap(mockDocument, [mainModule.name]);
+
+      expect(mockDocument.createElement).not.toHaveBeenCalledWith('script');
+			expect(mockDocument.body.appendChild).not.toHaveBeenCalled();
+
+      $state.go('test1');
+
+      expect(mockDocument.createElement).toHaveBeenCalledWith('script');
+			expect(mockDocument.body.appendChild).toHaveBeenCalled();
+      expect(mockDocument.body.appendChild.calls.count()).toBe(2);
     });
 
     it('should change the state once the script is loaded', function() {

@@ -86,6 +86,28 @@ $stateProvider.state('test', {
 });
 ```
 
+This also works with multiple views:
+
+```javascript
+$stateProvider.state('test', {
+  url: '/test',
+  views: {
+    header: {
+      templateUrl: 'header.html',
+      controllerUrl: 'controllers/header.js',
+      controller: 'Header',
+      controllerAs: 'vm'
+    },
+    footer: {
+      templateUrl: 'footer.html',
+      controllerUrl: 'controllers/footer.js',
+      controller: 'footer',
+      controllerAs: 'vm'
+    },
+  }
+});
+```
+
 ### Using with ui.bootstrap
 
 When you define your modal options you can now add `controllerUrl` which will be loaded before the modal is loaded:
