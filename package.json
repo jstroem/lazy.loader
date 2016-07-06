@@ -1,6 +1,6 @@
 {
   "name": "angular-lazy.loader",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Makes it possible to lazy load angular controllers, decorators and services etc. It works perfectly with ngRoute, ui.router and ui.bootstrap",
   "main": "dist/index.js",
   "directories": {
